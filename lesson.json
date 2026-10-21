@@ -1,19 +1,20 @@
 {
   "schema_version": 2,
   "id": "lsn_533917ea-656d-4fd5-b188-948363ec9b37",
-  "revision": "git-remote-1",
+  "revision": "git-remote-4",
   "title": "공유 기록을 받고 비교하고 되돌려요",
-  "description": "같은 안내를 로컬 원격과 주고받고 기록을 보존하며 복구해요.",
+  "description": "GitHub 없이 두 팀원의 실제 Git 복제본으로 협업해요. 정상 공유, push 거절, 충돌과 합의, 복구를 직접 경험해요.",
   "objectives": [
-    "로컬 기록·실제 원격·원격추적 참조를 구별해요.",
-    "fetch와 병합의 상태 변화를 실제로 확인해요.",
-    "미기록 수정 복원과 새 기록으로 되돌리기를 구별해요."
+    "내 커밋과 원격의 커밋을 구분해요.",
+    "fetch로 받은 커밋을 merge로 내 브랜치에 합쳐요.",
+    "커밋 전 파일 수정과 이미 만든 커밋을 각각 되돌려요."
   ],
   "sources": [
     "https://git-scm.com/docs/git-fetch",
     "https://git-scm.com/docs/git-merge",
     "https://git-scm.com/docs/git-restore",
-    "https://git-scm.com/docs/git-revert"
+    "https://git-scm.com/docs/git-revert",
+    "https://git-scm.com/docs/git-log"
   ],
   "review_enabled": false,
   "sections": [],
@@ -31,30 +32,60 @@
           "objectives": [
             "받은 기록과 현재 파일의 차이를 이해해요."
           ],
-          "premise": "같은 안내 파일을 로컬 원격으로 보내요. 다른 작업자가 추가한 안내를 받아도 내 작업 파일은 바로 바뀌지 않아요.",
+          "premise": "메모 서비스 팀에서 안내문 공유를 맡았어요. 공유 저장소 연결부터 직접 해요. 동료 지수의 별도 복제본에서도 직접 작업해요. 같은 실습 폴더에서 처음부터 이어서 진행해요.",
           "steps": [
+            {
+              "id": "stp_980674f9-edab-4c7e-a150-f5187534cda7",
+              "objectives": [
+                "공유 저장소를 만들고 origin 주소를 직접 연결해요."
+              ]
+            },
+            {
+              "id": "stp_eb8f9298-1005-4814-83c3-8cecad210a5a",
+              "objectives": [
+                "직접 만든 파일을 mv로 저장소에 가져와요."
+              ]
+            },
+            {
+              "id": "stp_ff43e4be-e921-416f-b197-1dbef1033678",
+              "objectives": [
+                "파일 작성과 로컬 커밋을 구별해요."
+              ]
+            },
             {
               "id": "stp_cc64a026-509c-4d7c-a53f-b036ed6ae523",
               "objectives": [
-                "커밋과 실제 원격 반영을 구별해요."
+                "커밋과 공유 저장소 반영을 구별해요."
               ]
             },
             {
               "id": "stp_ff21db31-358b-4f79-b1ac-d75ed9c8ddbe",
               "objectives": [
-                "원격 이름과 현재 브랜치를 구별해요."
+                "원격 이름과 브랜치 이름을 구분해요."
+              ]
+            },
+            {
+              "id": "stp_49119474-fc41-4fc8-b011-dd12c444403e",
+              "objectives": [
+                "두 작업 폴더와 하나의 공유 저장소 관계를 확인해요."
               ]
             },
             {
               "id": "stp_bb240382-615b-4679-ae14-79ee9f38940a",
               "objectives": [
-                "fetch의 원격추적 갱신과 현재HEAD를 구별해요."
+                "받은 기록과 현재 작업 파일을 구별해요."
               ]
             },
             {
               "id": "stp_7b85c356-5da5-4906-89ef-d8d87ba2f2ad",
               "objectives": [
-                "origin/main과 현재main의 다른 파일 내용을 이해해요."
+                "fetch가 현재 main을 병합하지 않는다는 점을 이해해요."
+              ]
+            },
+            {
+              "id": "stp_76c8d243-1eed-4c81-bad2-408f09a180eb",
+              "objectives": [
+                "받기와 병합을 구별해요."
               ]
             }
           ]
@@ -70,34 +101,82 @@
       "units": [
         {
           "id": "unt_b845a2fa-1370-4b34-9f90-4dd279bc9c71",
-          "title": "같은 안내의 공유와 복구",
+          "title": "함께 수정하고 충돌을 해결해요",
           "objectives": [
             "복구할 상태에 맞는 명령을 선택해요."
           ],
-          "premise": "받은 안내를 내 작업에 합쳐요. 이후 기록 전 수정과 이미 만든 잘못된 기록을 서로 다른 방법으로 되돌려요.",
+          "premise": "안전 안내와 함께 쓰기 안내를 동시에 맡았어요. 동료가 먼저 보내 내 push가 거절돼요. 같은 줄의 충돌을 합의해 해결한 뒤 수정과 커밋 취소도 경험해요.",
           "steps": [
             {
-              "id": "stp_76c8d243-1eed-4c81-bad2-408f09a180eb",
+              "id": "stp_1f7eb21f-f12e-49a8-bbfe-2debb9547698",
               "objectives": [
-                "fetch와 fast-forward merge의 책임을 연결해요."
+                "동료와 나의 작업이 갈라지는 시작을 직접 만들어요."
+              ]
+            },
+            {
+              "id": "stp_436fd262-9426-454e-910c-4c6a0b520920",
+              "objectives": [
+                "공통 기록에서 두 작업자의 커밋이 갈라짐을 확인해요."
+              ]
+            },
+            {
+              "id": "stp_d633d014-5c05-442c-8559-934dd9244272",
+              "objectives": [
+                "먼저 반영된 동료의 기록 때문에 push가 거절됨을 이해해요."
+              ]
+            },
+            {
+              "id": "stp_262b59ff-fdab-4d31-ba45-b8cb0274bf79",
+              "objectives": [
+                "실제 병합 충돌과 미병합 파일을 확인해요."
+              ]
+            },
+            {
+              "id": "stp_f2d9a476-96e8-43b2-b6ad-2df5286daee0",
+              "objectives": [
+                "충돌 해결은 사람이 의도한 최종 내용을 만드는 일임을 이해해요."
+              ]
+            },
+            {
+              "id": "stp_de9e6979-55c7-49d7-bd13-a4b3cdc28c9a",
+              "objectives": [
+                "파일 수정·해결 준비·병합 커밋의 차이를 확인해요."
+              ]
+            },
+            {
+              "id": "stp_9a3c3c9e-845c-4f06-8cd7-bc2ffd345276",
+              "objectives": [
+                "충돌 해결 뒤 두 작업자가 같은 안내를 공유함을 확인해요."
               ]
             },
             {
               "id": "stp_1bf14bec-abb0-4656-b320-7fe6c7f96022",
               "objectives": [
-                "git diff의 작업파일과 인덱스 비교를 이해해요."
+                "git diff가 작업 파일과 준비 영역을 비교함을 이해해요."
               ]
             },
             {
               "id": "stp_a648f761-237e-49ab-9ac5-e62e280be396",
               "objectives": [
-                "restore worktree가 버리는 미기록 변경을 구별해요."
+                "커밋하지 않은 작업 파일 수정을 취소해요."
+              ]
+            },
+            {
+              "id": "stp_2bcd5428-8523-49a8-93fb-41e51f518c8a",
+              "objectives": [
+                "파일 변경과 기록의 차이를 다시 확인해요."
+              ]
+            },
+            {
+              "id": "stp_b9b46a26-0843-43e5-a5b1-e417e4b78ecd",
+              "objectives": [
+                "잘못된 파일 수정이 커밋에 기록되는 순간을 확인해요."
               ]
             },
             {
               "id": "stp_cb42db3c-6669-4a1e-b201-c471091dabdc",
               "objectives": [
-                "revert의 새 보상 커밋과 기록 삭제를 구별해요."
+                "revert가 되돌림 커밋을 추가함을 이해해요."
               ]
             }
           ]
@@ -107,29 +186,330 @@
   ],
   "tasks": [
     {
-      "id": "stp_cc64a026-509c-4d7c-a53f-b036ed6ae523",
-      "title": "내 기록을 원격에 보내요",
-      "goal": "로컬에 만든 안내 기록을 origin의 main으로 보내세요.\n명령 형식: `git push origin main`",
+      "id": "stp_980674f9-edab-4c7e-a150-f5187534cda7",
+      "title": "팀의 공유 저장소를 직접 연결하세요",
+      "goal": "여러분은 메모 서비스 팀의 새 팀원이에요. 안내문 공유를 맡았어요.\n이번에는 GitHub 대신 실습 폴더에 공유 저장소를 만들어요.\n--bare는 작업 파일 없이 기록을 보관하는 저장소예요.\norigin은 연결할 주소에 붙이는 짧은 이름이에요.\n\n**할 일**\n\n1. `git init`를 실행하세요.\n2. `git init --bare ../remote.git`를 실행하세요.\n3. `git remote add origin ../remote.git`를 실행하세요.\n4. `git remote -v`를 실행하세요.\n5. 파일 내용과 기록을 확인한 뒤 제출하세요.",
       "language": "git",
       "starter_code": "",
-      "solution": "# 로컬 원격으로 실제 기록을 보내요.\ngit push origin main",
+      "solution": "# 내 작업 폴더에 Git 저장소가 생겼어요.\ngit init\n# 실습 폴더 안에 기록을 주고받을 공유 저장소가 생겼어요.\ngit init --bare ../remote.git\n# origin이라는 이름으로 공유 저장소 주소를 연결했어요.\ngit remote add origin ../remote.git\n# origin의 받기·보내기 주소가 보여요. 아직 커밋은 보내지 않았어요.\ngit remote -v",
       "tests": [],
       "required": true,
       "git_terminal": {
-        "files": {
-          "guide.txt": "base\n"
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "head_exists": false,
+          "origin_url": "../remote.git"
+        }
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "여러분은 메모 서비스 팀의 새 팀원이에요. 안내문 공유를 맡았어요.\n이번에는 GitHub 대신 실습 폴더에 공유 저장소를 만들어요.\n--bare는 작업 파일 없이 기록을 보관하는 저장소예요.\norigin은 연결할 주소에 붙이는 짧은 이름이에요.",
+          "target": "#git-demo-terminal"
         },
-        "setup": [
+        {
+          "action": "git_command",
+          "args": [
+            "init"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 작업 폴더에 Git 저장소가 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "init",
+            "--bare",
+            "../remote.git"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "실습 폴더 안에 기록을 주고받을 공유 저장소가 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "remote",
+            "add",
+            "origin",
+            "../remote.git"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "origin이라는 이름으로 공유 저장소 주소를 연결했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "remote",
+            "-v"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "origin의 받기·보내기 주소가 보여요. 아직 커밋은 보내지 않았어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_eb8f9298-1005-4814-83c3-8cecad210a5a",
+      "title": "바깥에서 만든 팀 안내문을 가져오세요",
+      "goal": "팀장이 기본 안내문을 준비해 달래요.\n../inbox도 이 실습 전용 폴더예요. 그곳에서 작성해 옮겨요.\n\n**할 일**\n\n1. `mkdir ../inbox`를 실행하세요.\n2. `echo \"안내: 메모를 남겨요\" > ../inbox/guide.txt`를 실행하세요.\n3. `cat ../inbox/guide.txt`를 실행하세요.\n4. `mv ../inbox/guide.txt .`를 실행하세요.\n5. `cat guide.txt`를 실행하세요.\n6. `git status`를 실행하세요.\n7. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 안내문을 준비할 바깥 폴더가 생겼어요.\nmkdir ../inbox\n# 준비 폴더에 안내문을 썼어요.\necho \"안내: 메모를 남겨요\" > ../inbox/guide.txt\n# 메모를 남기라는 안내가 보여요.\ncat ../inbox/guide.txt\n# 안내문을 현재 저장소로 옮겼어요.\nmv ../inbox/guide.txt .\n# 같은 안내문이 저장소 안에서 보여요.\ncat guide.txt\n# 아직 커밋하지 않은 guide.txt가 보여요.\ngit status",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "head_exists": false,
+          "working_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          },
+          "clean": false
+        },
+        "demo_setup": []
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "팀장이 기본 안내문을 준비해 달래요.\n../inbox도 이 실습 전용 폴더예요. 그곳에서 작성해 옮겨요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "mkdir ../inbox",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "안내문을 준비할 바깥 폴더가 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"안내: 메모를 남겨요\" > ../inbox/guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "준비 폴더에 안내문을 썼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat ../inbox/guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "메모를 남기라는 안내가 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "mv ../inbox/guide.txt .",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "안내문을 현재 저장소로 옮겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "같은 안내문이 저장소 안에서 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "status"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "아직 커밋하지 않은 guide.txt가 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_ff43e4be-e921-416f-b197-1dbef1033678",
+      "title": "직접 가져온 안내문을 커밋하세요",
+      "goal": "팀과 공유하기 전에 안내문을 내 기록에 남겨요.\n\n**할 일**\n\n1. `git add guide.txt`를 실행하세요.\n2. `git commit -m \"메모 안내\"`를 실행하세요.\n3. `git log --oneline`를 실행하세요.\n4. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 안내문을 준비 영역에 담았어요.\ngit add guide.txt\n# 내 main에 메모 안내 커밋이 생겼어요.\ngit commit -m \"메모 안내\"\n# 첫 기록인 메모 안내가 보여요.\ngit log --oneline",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 1,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          }
+        },
+        "demo_setup": [
           {
             "kind": "file",
             "path": "guide.txt",
-            "content": "local\n"
+            "content": "안내: 메모를 남겨요\n"
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "팀과 공유하기 전에 안내문을 내 기록에 남겨요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "add",
+            "guide.txt"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "안내문을 준비 영역에 담았어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "commit",
+            "-m",
+            "메모 안내"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 main에 메모 안내 커밋이 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "log",
+            "--oneline"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "첫 기록인 메모 안내가 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_cc64a026-509c-4d7c-a53f-b036ed6ae523",
+      "title": "내 커밋을 팀의 공유 저장소로 보내세요",
+      "goal": "안내문은 내 main에만 있어요. 팀에서도 받을 수 있게 보내요.\n\n**할 일**\n\n1. `git push origin main`를 실행하세요.\n2. `git log --oneline`를 실행하세요.\n3. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 공유 저장소의 main에도 메모 안내 커밋이 반영됐어요.\ngit push origin main\n# 보낸 기록은 내 메모 안내 커밋이에요.\ngit log --oneline",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 1,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          },
+          "remote_tracking_current": true
+        },
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
           },
           {
             "kind": "git",
             "args": [
               "add",
-              "--",
               "guide.txt"
             ]
           },
@@ -138,12 +518,17 @@
             "args": [
               "commit",
               "-m",
-              "Local guide"
+              "메모 안내"
             ]
           }
         ]
       },
       "narration": [
+        {
+          "action": "say",
+          "text": "안내문은 내 main에만 있어요. 팀에서도 받을 수 있게 보내요.",
+          "target": "#git-demo-terminal"
+        },
         {
           "action": "git_command",
           "args": [
@@ -151,46 +536,39 @@
             "origin",
             "main"
           ],
-          "say": "로컬 원격으로 안내 기록을 보내요.",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "say",
-          "text": "push가 성공해 실제 원격 main도 같은 기록을 가리켜요.",
+          "text": "공유 저장소의 main에도 메모 안내 커밋이 반영됐어요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "git_command",
           "args": [
             "log",
-            "-1",
-            "--format=%s"
+            "--oneline"
           ],
-          "say": "보낸 마지막 기록의 제목을 읽어요.",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "say",
-          "text": "Local guide 기록이에요.",
+          "text": "보낸 기록은 내 메모 안내 커밋이에요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "say",
-          "text": "조심하세요. 커밋은 로컬 기록이에요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "실제 원격으로 보내는 동작은 따로 필요해요.",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
           "target": "#git-demo-terminal"
         }
       ],
       "git_checks": {
-        "minimum_commits": 2,
-        "head_message": "Local guide",
+        "minimum_commits": 1,
+        "head_message": "메모 안내",
         "tracked_files": {
-          "tracked.txt": "initial\n",
-          "guide.txt": "local\n"
+          "guide.txt": "안내: 메모를 남겨요\n"
         },
         "branch": "main",
         "pushed": true
@@ -198,525 +576,29 @@
     },
     {
       "id": "stp_ff21db31-358b-4f79-b1ac-d75ed9c8ddbe",
-      "title": "origin은 저장소의 별명이에요",
-      "goal": "origin과main은 같은 종류의 이름일까요?",
+      "title": "origin과 main은 각각 무엇일까요?",
+      "goal": "팀원이 보낼 주소와 보낼 브랜치를 물어봤어요.\n\n**할 일**\n\n1. `git remote -v`를 실행하세요.\n2. `git branch`를 실행하세요.\n3. 확인한 내용에 맞는 보기를 고르고 제출하세요.",
       "language": "git",
       "starter_code": "",
       "solution": "different",
       "tests": [],
       "required": true,
       "git_terminal": {
-        "files": {
-          "guide.txt": "base\n"
-        },
-        "setup": []
-      },
-      "narration": [
-        {
-          "action": "git_command",
-          "args": [
-            "remote",
-            "-v"
-          ],
-          "say": "원격 이름과 주소를 확인해요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "origin 주소는 이 실습 안의 로컬 저장소예요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "branch",
-            "--show-current"
-          ],
-          "say": "현재 브랜치 이름도 확인해요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "지금 브랜치는 main이에요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "조심하세요. 여기서는 실제 GitHub 계정이나 개인 저장소에 전송하지 않아요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "choose_answer",
-          "id": "different"
-        }
-      ],
-      "interaction": {
-        "kind": "choice",
-        "options": [
-          {
-            "id": "different",
-            "text": "origin은 원격 별명, main은 브랜치예요"
-          },
-          {
-            "id": "same",
-            "text": "둘 다 현재 브랜치의 다른 이름이에요"
-          }
-        ],
-        "answer": "different"
-      }
-    },
-    {
-      "id": "stp_bb240382-615b-4679-ae14-79ee9f38940a",
-      "title": "다른 작업자의 기록을 받아요",
-      "goal": "원격의 새 기록만 받으세요.\n현재 기록과 안내 파일은 유지하세요.\n명령 형식: `git fetch origin`",
-      "language": "git",
-      "starter_code": "",
-      "solution": "# 작업 파일을 바꾸지 않고 기록만 받아요.\ngit fetch origin",
-      "tests": [],
-      "required": true,
-      "git_terminal": {
-        "files": {
-          "guide.txt": "base\n"
-        },
-        "setup": [
-          {
-            "kind": "remote_commit",
-            "files": {
-              "guide.txt": "shared\n"
-            },
-            "message": "Shared guide"
-          }
-        ],
-        "state_goal": {
-          "remote_tracking_current": true,
-          "commit_count": 1,
-          "clean": true,
-          "head_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "base\n"
-          },
-          "working_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "base\n"
-          }
-        }
-      },
-      "narration": [
-        {
-          "action": "git_command",
-          "args": [
-            "fetch",
-            "origin"
-          ],
-          "say": "다른 작업자의 기록을 받아요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "원격 추적 기록이 새 안내를 가리켜요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "show",
-            "HEAD:guide.txt"
-          ],
-          "say": "내 현재 기록의 안내를 읽어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "현재 안내는 아직 base예요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "show",
-            "origin/main:guide.txt"
-          ],
-          "say": "받아 둔 원격 기록도 읽어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "받은 기록에는 shared가 있어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "조심하세요. fetch만으로 현재 브랜치나 작업 파일을 합치지는 않아요.",
-          "target": "#git-demo-terminal"
-        }
-      ]
-    },
-    {
-      "id": "stp_7b85c356-5da5-4906-89ef-d8d87ba2f2ad",
-      "title": "받은 기록과 작업 파일을 비교해요",
-      "goal": "fetch한 뒤 내 안내는base, 받은 안내는shared예요.\n왜 다를까요?",
-      "language": "git",
-      "starter_code": "",
-      "solution": "notmerged",
-      "tests": [],
-      "required": true,
-      "git_terminal": {
-        "files": {
-          "guide.txt": "base\n"
-        },
-        "setup": [
-          {
-            "kind": "remote_commit",
-            "files": {
-              "guide.txt": "shared\n"
-            },
-            "message": "Shared guide"
-          }
-        ]
-      },
-      "narration": [
-        {
-          "action": "git_command",
-          "args": [
-            "fetch",
-            "origin"
-          ],
-          "say": "같은 원격 기록을 받아요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "원격 추적 참조만 최신으로 맞춰요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "show",
-            "HEAD:guide.txt"
-          ],
-          "say": "현재 기록을 읽어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "base가 남아 있어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "show",
-            "origin/main:guide.txt"
-          ],
-          "say": "받은 기록을 읽어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "shared가 들어 있어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "조심하세요. 현재 파일과 받아 둔 기록이 다르다고 바로 오류인 것은 아니에요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "choose_answer",
-          "id": "notmerged"
-        }
-      ],
-      "interaction": {
-        "kind": "choice",
-        "options": [
-          {
-            "id": "notmerged",
-            "text": "기록만 받았고 내 작업에는 아직 합치지 않았어요"
-          },
-          {
-            "id": "broken",
-            "text": "두 내용이 다르면 fetch가 반드시 실패했어요"
-          }
-        ],
-        "answer": "notmerged"
-      }
-    },
-    {
-      "id": "stp_76c8d243-1eed-4c81-bad2-408f09a180eb",
-      "title": "받은 기록을 내 작업에 합쳐요",
-      "goal": "원격의 새 기록을 받은 뒤 내main에 합치세요.\n명령: `git fetch origin` 다음\n`git merge --ff-only origin/main`",
-      "language": "git",
-      "starter_code": "",
-      "solution": "# 받아 둔 기록으로 현재 브랜치를 전진시켜요.\ngit fetch origin\ngit merge --ff-only origin/main",
-      "tests": [],
-      "required": true,
-      "git_terminal": {
-        "files": {
-          "guide.txt": "base\n"
-        },
-        "setup": [
-          {
-            "kind": "remote_commit",
-            "files": {
-              "guide.txt": "shared\n"
-            },
-            "message": "Shared guide"
-          }
-        ],
-        "state_goal": {
-          "remote_tracking_current": true,
-          "commit_count": 2,
-          "clean": true,
-          "current_branch": "main",
-          "head_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "shared\n"
-          },
-          "working_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "shared\n"
-          }
-        }
-      },
-      "narration": [
-        {
-          "action": "git_command",
-          "args": [
-            "fetch",
-            "origin"
-          ],
-          "say": "먼저 새 기록을 받아요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "아직 내 작업은 이전 안내예요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "merge",
-            "--ff-only",
-            "origin/main"
-          ],
-          "say": "이번에는 받은 기록으로 전진해요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "갈라진 로컬 변경이 없어 바로 전진했어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "show",
-            "HEAD:guide.txt"
-          ],
-          "say": "합친 현재 안내를 읽어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "이제 현재 기록에도 shared가 있어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "조심하세요. ff-only는 갈라진 이력의 충돌을 알아서 해결하는 옵션이 아니에요.",
-          "target": "#git-demo-terminal"
-        }
-      ]
-    },
-    {
-      "id": "stp_1bf14bec-abb0-4656-b320-7fe6c7f96022",
-      "title": "아직 기록하지 않은 차이를 읽어요",
-      "goal": "안내만 고치고 아직add하지 않았어요.\ngit diff는 무엇을 비교할까요?",
-      "language": "git",
-      "starter_code": "",
-      "solution": "working-index",
-      "tests": [],
-      "required": true,
-      "git_terminal": {
-        "files": {
-          "guide.txt": "base\n"
-        },
-        "setup": [
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
           {
             "kind": "file",
             "path": "guide.txt",
-            "content": "draft\n"
-          }
-        ]
-      },
-      "narration": [
-        {
-          "action": "git_command",
-          "args": [
-            "diff",
-            "--",
-            "guide.txt"
-          ],
-          "say": "아직 기록하지 않은 차이를 읽어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "base 대신 draft가 있는 작업 변경이에요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "조심하세요. 이 diff는 원격 비교가 아니에요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "스테이징한 변경을 보는 diff --cached와도 달라요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "choose_answer",
-          "id": "working-index"
-        }
-      ],
-      "interaction": {
-        "kind": "choice",
-        "options": [
-          {
-            "id": "remote",
-            "text": "언제나 GitHub의 최신 파일과 비교해요"
-          },
-          {
-            "id": "working-index",
-            "text": "작업 파일과 인덱스의 차이예요"
-          }
-        ],
-        "answer": "working-index"
-      }
-    },
-    {
-      "id": "stp_a648f761-237e-49ab-9ac5-e62e280be396",
-      "title": "기록 전 실수는 작업 파일만 복원해요",
-      "goal": "실습 안내에 잘못 적은 미기록 수정을 버리세요.\n인덱스의 안내로 작업 파일만 복원하세요.\n명령: `git restore --worktree -- guide.txt`",
-      "language": "git",
-      "starter_code": "",
-      "solution": "# 미기록 수정이 사라지는 실습이에요.\ngit restore --worktree -- guide.txt",
-      "tests": [],
-      "required": true,
-      "git_terminal": {
-        "files": {
-          "guide.txt": "base\n"
-        },
-        "setup": [
-          {
-            "kind": "file",
-            "path": "guide.txt",
-            "content": "mistake\n"
-          }
-        ],
-        "state_goal": {
-          "commit_count": 1,
-          "clean": true,
-          "head_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "base\n"
-          },
-          "working_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "base\n"
-          },
-          "index": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "base\n"
-          }
-        }
-      },
-      "narration": [
-        {
-          "action": "git_command",
-          "args": [
-            "diff",
-            "--",
-            "guide.txt"
-          ],
-          "say": "버리기 전에 작업 변경을 확인해요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "안내가 mistake로 바뀌어 있어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "조심하세요. 복원하면 이 미기록 수정은 사라져요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "지금은 독립 실습 파일만 다뤄요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "restore",
-            "--worktree",
-            "--",
-            "guide.txt"
-          ],
-          "say": "인덱스의 안내로 작업 파일을 복원해요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "복원 명령이 끝났어요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "git_command",
-          "args": [
-            "diff",
-            "--",
-            "guide.txt"
-          ],
-          "say": "남은 작업 변경도 확인해요.",
-          "target": "#git-demo-terminal"
-        },
-        {
-          "action": "say",
-          "text": "차이 출력이 없어요. 기록 자체는 그대로예요.",
-          "target": "#git-demo-terminal"
-        }
-      ]
-    },
-    {
-      "id": "stp_cb42db3c-6669-4a1e-b201-c471091dabdc",
-      "title": "기존 기록을 남기며 되돌려요",
-      "goal": "잘못된 마지막 안내를 되돌리는 새 기록을 남기세요.\n기존 두 기록은 유지해야 해요.\n명령: `git revert --no-edit HEAD`",
-      "language": "git",
-      "starter_code": "",
-      "solution": "# 기존 기록을 지우지 않고 반대 변경을 기록해요.\ngit revert --no-edit HEAD",
-      "tests": [],
-      "required": true,
-      "git_terminal": {
-        "files": {
-          "guide.txt": "base\n"
-        },
-        "setup": [
-          {
-            "kind": "file",
-            "path": "guide.txt",
-            "content": "wrong\n"
+            "content": "안내: 메모를 남겨요\n"
           },
           {
             "kind": "git",
             "args": [
               "add",
-              "--",
               "guide.txt"
             ]
           },
@@ -725,42 +607,453 @@
             "args": [
               "commit",
               "-m",
-              "Wrong guide"
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
             ]
           }
-        ],
-        "state_goal": {
-          "commit_count": 3,
-          "parent_count": 1,
-          "clean": true,
-          "head_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "base\n"
-          },
-          "parent_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "wrong\n"
-          },
-          "working_files": {
-            "tracked.txt": "initial\n",
-            "guide.txt": "base\n"
-          }
-        }
+        ]
       },
       "narration": [
         {
+          "action": "say",
+          "text": "팀원이 보낼 주소와 보낼 브랜치를 물어봤어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
           "action": "git_command",
           "args": [
-            "revert",
-            "--no-edit",
-            "HEAD"
+            "remote",
+            "-v"
           ],
-          "say": "마지막 변경을 되돌리는 새 기록을 남겨요.",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "say",
-          "text": "잘못된 변경의 반대 내용이 새로 기록됐어요.",
+          "text": "origin은 공유 저장소 주소에 붙인 이름이에요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "branch"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "별표가 붙은 main이 현재 브랜치예요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
+          "target": "#git-demo-terminal"
+        }
+      ],
+      "interaction": {
+        "kind": "choice",
+        "options": [
+          {
+            "id": "different",
+            "text": "origin은 원격 저장소의 이름, main은 브랜치 이름이에요."
+          },
+          {
+            "id": "same",
+            "text": "origin과 main은 모두 현재 브랜치의 이름이에요."
+          }
+        ],
+        "answer": "different"
+      }
+    },
+    {
+      "id": "stp_49119474-fc41-4fc8-b011-dd12c444403e",
+      "title": "다른 팀원의 작업도 직접 만들어 보세요",
+      "goal": "동료 지수는 문의 안내를 맡았어요.\n동료의 별도 복제본에서 직접 수정하고 보내 볼게요.\nclone은 공유 저장소를 새 작업 폴더로 복제해요.\n마지막에는 내 work 폴더로 돌아와요.\n\n**할 일**\n\n1. `git clone ../remote.git ../peer`를 실행하세요.\n2. `cd ../peer`를 실행하세요.\n3. `echo \"문의: 상담 창구\" >> guide.txt`를 실행하세요.\n4. `cat guide.txt`를 실행하세요.\n5. `git add guide.txt`를 실행하세요.\n6. `git commit -m \"문의 안내\"`를 실행하세요.\n7. `git push origin main`를 실행하세요.\n8. `cd ../work`를 실행하세요.\n9. `cat guide.txt`를 실행하세요.\n10. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 동료가 쓸 별도 복제본 peer가 생겼어요.\ngit clone ../remote.git ../peer\n# 동료의 작업 폴더로 이동했어요.\ncd ../peer\n# 동료의 안내문에 문의 한 줄을 더했어요.\necho \"문의: 상담 창구\" >> guide.txt\n# 기존 메모 안내와 새 문의 안내가 함께 보여요.\ncat guide.txt\n# 문의 안내를 준비 영역에 담았어요.\ngit add guide.txt\n# 동료의 main에 문의 안내 커밋이 생겼어요.\ngit commit -m \"문의 안내\"\n# 동료의 문의 안내가 공유 저장소로 갔어요.\ngit push origin main\n# 내 작업 폴더로 돌아왔어요.\ncd ../work\n# 내 파일에는 아직 메모 안내만 있어요.\ncat guide.txt",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 1,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          },
+          "remote_tracking_current": false
+        },
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "동료 지수는 문의 안내를 맡았어요.\n동료의 별도 복제본에서 직접 수정하고 보내 볼게요.\nclone은 공유 저장소를 새 작업 폴더로 복제해요.\n마지막에는 내 work 폴더로 돌아와요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "clone",
+            "../remote.git",
+            "../peer"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "동료가 쓸 별도 복제본 peer가 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cd ../peer",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "동료의 작업 폴더로 이동했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"문의: 상담 창구\" >> guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "동료의 안내문에 문의 한 줄을 더했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "기존 메모 안내와 새 문의 안내가 함께 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "add",
+            "guide.txt"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "문의 안내를 준비 영역에 담았어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "commit",
+            "-m",
+            "문의 안내"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "동료의 main에 문의 안내 커밋이 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "push",
+            "origin",
+            "main"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "동료의 문의 안내가 공유 저장소로 갔어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cd ../work",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 작업 폴더로 돌아왔어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 파일에는 아직 메모 안내만 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_bb240382-615b-4679-ae14-79ee9f38940a",
+      "title": "동료가 보낸 새 커밋을 받아 보세요",
+      "goal": "지수가 보낸 기록을 내 저장소로 받아요.\nfetch는 받은 기록을 갱신해요. 내 main은 그대로예요.\n\n**할 일**\n\n1. `git fetch origin`를 실행하세요.\n2. `git show origin/main:guide.txt`를 실행하세요.\n3. `cat guide.txt`를 실행하세요.\n4. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# origin/main이 동료의 새 커밋을 가리켜요.\ngit fetch origin\n# 받은 기록에는 문의 안내도 있어요.\ngit show origin/main:guide.txt\n# 내 작업 파일에는 메모 안내만 남아 있어요.\ncat guide.txt",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 1,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 메모를 남겨요\n"
+          },
+          "remote_tracking_current": true
+        },
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "지수가 보낸 기록을 내 저장소로 받아요.\nfetch는 받은 기록을 갱신해요. 내 main은 그대로예요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "fetch",
+            "origin"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "origin/main이 동료의 새 커밋을 가리켜요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "show",
+            "origin/main:guide.txt"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "받은 기록에는 문의 안내도 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 작업 파일에는 메모 안내만 남아 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_7b85c356-5da5-4906-89ef-d8d87ba2f2ad",
+      "title": "받은 안내와 내 안내는 왜 다를까요?",
+      "goal": "같은 안내문인데 두 내용이 달라요. 방금 한 행동으로 판단해요.\n\n**할 일**\n\n1. `git show origin/main:guide.txt`를 실행하세요.\n2. `git show HEAD:guide.txt`를 실행하세요.\n3. 확인한 내용에 맞는 보기를 고르고 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "notmerged",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "같은 안내문인데 두 내용이 달라요. 방금 한 행동으로 판단해요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "show",
+            "origin/main:guide.txt"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "받아 둔 기록에는 문의 안내가 있어요.",
           "target": "#git-demo-terminal"
         },
         {
@@ -769,40 +1062,2465 @@
             "show",
             "HEAD:guide.txt"
           ],
-          "say": "현재 안내를 읽어요.",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "say",
-          "text": "현재 안내는 다시 base예요.",
+          "text": "내 main에는 메모 안내만 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
+          "target": "#git-demo-terminal"
+        }
+      ],
+      "interaction": {
+        "kind": "choice",
+        "options": [
+          {
+            "id": "notmerged",
+            "text": "원격의 커밋을 받았지만 아직 내 main에 병합하지 않았어요."
+          },
+          {
+            "id": "broken",
+            "text": "두 내용이 다르므로 fetch가 실패했어요."
+          }
+        ],
+        "answer": "notmerged"
+      }
+    },
+    {
+      "id": "stp_76c8d243-1eed-4c81-bad2-408f09a180eb",
+      "title": "동료의 문의 안내를 내 main에 반영하세요",
+      "goal": "문의 안내를 확인했어요. 이제 내 파일에도 반영해요.\n\n**할 일**\n\n1. `cat guide.txt`를 실행하세요.\n2. `git merge origin/main`를 실행하세요.\n3. `cat guide.txt`를 실행하세요.\n4. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 병합 전에는 메모 안내만 보여요.\ncat guide.txt\n# 내 main이 받아 둔 문의 안내 커밋까지 이어졌어요.\ngit merge origin/main\n# 내 작업 파일에도 문의 안내가 보여요.\ncat guide.txt",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 2,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+          }
+        },
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "문의 안내를 확인했어요. 이제 내 파일에도 반영해요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "병합 전에는 메모 안내만 보여요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "git_command",
           "args": [
-            "rev-list",
-            "--count",
+            "merge",
+            "origin/main"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 main이 받아 둔 문의 안내 커밋까지 이어졌어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 작업 파일에도 문의 안내가 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. fetch는 내 main을 바꾸지 않아요. merge로 반영해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_1f7eb21f-f12e-49a8-bbfe-2debb9547698",
+      "title": "내가 맡은 안전 안내를 먼저 기록하세요",
+      "goal": "이번에는 같은 안내문을 함께 고쳐요.\n여러분은 안전 안내, 지수는 함께 쓰기 안내를 맡았어요.\n아직 서로의 새 작업을 받지 않은 상태예요.\n\n**할 일**\n\n1. `cat guide.txt`를 실행하세요.\n2. `echo \"안내: 메모를 안전하게 남겨요\" > guide.txt`를 실행하세요.\n3. `echo \"문의: 상담 창구\" >> guide.txt`를 실행하세요.\n4. `git diff`를 실행하세요.\n5. `git add guide.txt`를 실행하세요.\n6. `git commit -m \"안전한 메모 안내\"`를 실행하세요.\n7. 파일과 상태를 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 공유한 정상 안내가 보여요.\ncat guide.txt\n# 내가 맡은 안전 안내로 첫 줄을 바꿨어요.\necho \"안내: 메모를 안전하게 남겨요\" > guide.txt\n# 기존 문의 안내도 다시 남겼어요.\necho \"문의: 상담 창구\" >> guide.txt\n# 내가 바꾼 첫 줄이 보여요.\ngit diff\n# 안전 안내를 준비했어요.\ngit add guide.txt\n# 내 main에만 안전 안내 커밋이 생겼어요.\ngit commit -m \"안전한 메모 안내\"",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          }
+        ],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 3,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          }
+        }
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "이번에는 같은 안내문을 함께 고쳐요.\n여러분은 안전 안내, 지수는 함께 쓰기 안내를 맡았어요.\n아직 서로의 새 작업을 받지 않은 상태예요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "공유한 정상 안내가 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"안내: 메모를 안전하게 남겨요\" > guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내가 맡은 안전 안내로 첫 줄을 바꿨어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"문의: 상담 창구\" >> guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "기존 문의 안내도 다시 남겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "diff"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내가 바꾼 첫 줄이 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "add",
+            "guide.txt"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "안전 안내를 준비했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "commit",
+            "-m",
+            "안전한 메모 안내"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 main에만 안전 안내 커밋이 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. 충돌 표시는 정답이 아니에요. 두 요청을 읽고 팀과 정한 안내를 남겨요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_436fd262-9426-454e-910c-4c6a0b520920",
+      "title": "동료도 같은 줄을 고쳐 먼저 보내세요",
+      "goal": "지수 역할로 바꿔요. 같은 첫 줄을 다르게 고쳐 먼저 보내요.\n내 작업 폴더의 안전 안내 커밋은 그대로 남아요.\n\n**할 일**\n\n1. `cd ../peer`를 실행하세요.\n2. `echo \"안내: 메모를 함께 남겨요\" > guide.txt`를 실행하세요.\n3. `echo \"문의: 상담 창구\" >> guide.txt`를 실행하세요.\n4. `git add guide.txt`를 실행하세요.\n5. `git commit -m \"함께 쓰는 메모 안내\"`를 실행하세요.\n6. `git push origin main`를 실행하세요.\n7. `cd ../work`를 실행하세요.\n8. `cat guide.txt`를 실행하세요.\n9. 파일과 상태를 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 지수의 복제본으로 이동했어요.\ncd ../peer\n# 지수는 같은 첫 줄에 함께 쓰기 안내를 적었어요.\necho \"안내: 메모를 함께 남겨요\" > guide.txt\n# 문의 안내는 유지했어요.\necho \"문의: 상담 창구\" >> guide.txt\n# 지수의 변경을 준비했어요.\ngit add guide.txt\n# 지수의 별도 커밋이 생겼어요.\ngit commit -m \"함께 쓰는 메모 안내\"\n# 지수가 먼저 공유 저장소에 보냈어요.\ngit push origin main\n# 내 작업 폴더로 돌아왔어요.\ncd ../work\n# 내 파일은 여전히 안전 안내예요.\ncat guide.txt",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          }
+        ],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 3,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          "remote_tracking_current": false
+        }
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "지수 역할로 바꿔요. 같은 첫 줄을 다르게 고쳐 먼저 보내요.\n내 작업 폴더의 안전 안내 커밋은 그대로 남아요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cd ../peer",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "지수의 복제본으로 이동했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"안내: 메모를 함께 남겨요\" > guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "지수는 같은 첫 줄에 함께 쓰기 안내를 적었어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"문의: 상담 창구\" >> guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "문의 안내는 유지했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "add",
+            "guide.txt"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "지수의 변경을 준비했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "commit",
+            "-m",
+            "함께 쓰는 메모 안내"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "지수의 별도 커밋이 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "push",
+            "origin",
+            "main"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "지수가 먼저 공유 저장소에 보냈어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cd ../work",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 작업 폴더로 돌아왔어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 파일은 여전히 안전 안내예요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. 충돌 표시는 정답이 아니에요. 두 요청을 읽고 팀과 정한 안내를 남겨요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_d633d014-5c05-442c-8559-934dd9244272",
+      "title": "내 push가 거절된 이유를 확인하세요",
+      "goal": "이번에는 내가 올릴 차례예요. 지수가 먼저 올렸죠.\n그대로 덮어쓰지 말고 지수의 기록부터 받아 비교해요.\n\n**할 일**\n\n1. `git push origin main`를 실행하세요.\n2. `git fetch origin`를 실행하세요.\n3. `git show origin/main:guide.txt`를 실행하세요.\n4. `cat guide.txt`를 실행하세요.\n5. 파일과 상태를 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 거절됐어요. 공유 저장소에 내 기록에 없는 지수의 커밋이 있어요.\ngit push origin main\n# 지수의 새 기록을 받았어요. 내 main은 그대로예요.\ngit fetch origin\n# 받은 기록에는 함께 쓰기 안내가 있어요.\ngit show origin/main:guide.txt\n# 내 파일에는 안전 안내가 있어요.\ncat guide.txt",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          }
+        ],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 3,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          "remote_tracking_current": true
+        }
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "이번에는 내가 올릴 차례예요. 지수가 먼저 올렸죠.\n그대로 덮어쓰지 말고 지수의 기록부터 받아 비교해요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "git push origin main",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal",
+          "expected_exit": 1
+        },
+        {
+          "action": "say",
+          "text": "거절됐어요. 공유 저장소에 내 기록에 없는 지수의 커밋이 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "fetch",
+            "origin"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "지수의 새 기록을 받았어요. 내 main은 그대로예요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "show",
+            "origin/main:guide.txt"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "받은 기록에는 함께 쓰기 안내가 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 파일에는 안전 안내가 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. 충돌 표시는 정답이 아니에요. 두 요청을 읽고 팀과 정한 안내를 남겨요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_262b59ff-fdab-4d31-ba45-b8cb0274bf79",
+      "title": "같은 줄의 두 변경을 합쳐 보세요",
+      "goal": "두 요청을 모두 반영하려고 병합해요.\n같은 첫 줄이 서로 달라 Git이 대신 선택할 수 없어요.\n\n**할 일**\n\n1. `git merge origin/main`를 실행하세요.\n2. `git status`를 실행하세요.\n3. `cat guide.txt`를 실행하세요.\n4. 파일과 상태를 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 충돌이 났어요. 병합은 아직 끝나지 않았어요.\ngit merge origin/main\n# guide.txt가 양쪽에서 수정된 파일로 보여요.\ngit status\n# 내 안전 안내와 지수의 함께 쓰기 안내 사이에 충돌 표시가 보여요.\ncat guide.txt",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          }
+        ],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 3,
+          "clean": false,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          "merge_in_progress": true,
+          "unmerged_paths": [
+            "guide.txt"
+          ]
+        }
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "두 요청을 모두 반영하려고 병합해요.\n같은 첫 줄이 서로 달라 Git이 대신 선택할 수 없어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "git merge origin/main",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal",
+          "expected_exit": 1
+        },
+        {
+          "action": "say",
+          "text": "충돌이 났어요. 병합은 아직 끝나지 않았어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "status"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "guide.txt가 양쪽에서 수정된 파일로 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 안전 안내와 지수의 함께 쓰기 안내 사이에 충돌 표시가 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. 충돌 표시는 정답이 아니에요. 두 요청을 읽고 팀과 정한 안내를 남겨요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_f2d9a476-96e8-43b2-b6ad-2df5286daee0",
+      "title": "팀이 합의한 안내로 충돌 파일을 고치세요",
+      "goal": "팀과 상의해 안전하게 함께 남긴다는 안내로 정했어요.\n충돌 표시를 없애고 두 요청을 한 문장에 담아요.\n\n**할 일**\n\n1. `echo \"안내: 메모를 안전하게 함께 남겨요\" > guide.txt`를 실행하세요.\n2. `echo \"문의: 상담 창구\" >> guide.txt`를 실행하세요.\n3. `cat guide.txt`를 실행하세요.\n4. 파일과 상태를 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 합의한 첫 줄로 파일을 다시 썼어요.\necho \"안내: 메모를 안전하게 함께 남겨요\" > guide.txt\n# 문의 안내도 유지했어요.\necho \"문의: 상담 창구\" >> guide.txt\n# 충돌 표시 없이 두 요청을 담은 안내문이 보여요.\ncat guide.txt",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "merge_conflict",
+            "branch": "origin/main"
+          }
+        ],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 3,
+          "clean": false,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          "merge_in_progress": true,
+          "unmerged_paths": [
+            "guide.txt"
+          ],
+          "working_files": {
+            "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          }
+        }
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "팀과 상의해 안전하게 함께 남긴다는 안내로 정했어요.\n충돌 표시를 없애고 두 요청을 한 문장에 담아요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"안내: 메모를 안전하게 함께 남겨요\" > guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "합의한 첫 줄로 파일을 다시 썼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"문의: 상담 창구\" >> guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "문의 안내도 유지했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "충돌 표시 없이 두 요청을 담은 안내문이 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. 충돌 표시는 정답이 아니에요. 두 요청을 읽고 팀과 정한 안내를 남겨요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_de9e6979-55c7-49d7-bd13-a4b3cdc28c9a",
+      "title": "충돌 해결을 준비하고 병합 기록을 남기세요",
+      "goal": "파일 내용은 정했어요. 이제 해결됐다고 알리고 기록해요.\n\n**할 일**\n\n1. `git add guide.txt`를 실행하세요.\n2. `git status`를 실행하세요.\n3. `git commit -m \"메모 안내 병합\"`를 실행하세요.\n4. `cat guide.txt`를 실행하세요.\n5. 파일과 상태를 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 충돌을 해결한 파일로 준비했어요.\ngit add guide.txt\n# 충돌은 해결됐지만 병합 커밋을 남기라는 안내예요.\ngit status\n# 두 작업을 함께 잇는 병합 커밋이 생겼어요.\ngit commit -m \"메모 안내 병합\"\n# 두 요청을 반영한 안내가 남아 있어요.\ncat guide.txt",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "merge_conflict",
+            "branch": "origin/main"
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          }
+        ],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 5,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          "parent_count": 2,
+          "merge_in_progress": false,
+          "unmerged_paths": []
+        }
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "파일 내용은 정했어요. 이제 해결됐다고 알리고 기록해요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "add",
+            "guide.txt"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "충돌을 해결한 파일로 준비했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "status"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "충돌은 해결됐지만 병합 커밋을 남기라는 안내예요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "commit",
+            "-m",
+            "메모 안내 병합"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "두 작업을 함께 잇는 병합 커밋이 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "두 요청을 반영한 안내가 남아 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. 충돌 표시는 정답이 아니에요. 두 요청을 읽고 팀과 정한 안내를 남겨요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_9a3c3c9e-845c-4f06-8cd7-bc2ffd345276",
+      "title": "해결한 안내를 공유하고 동료도 받아 보세요",
+      "goal": "이제 내 push를 다시 시도해요.\n지수도 완성된 안내를 받아 같은 결과를 확인해요.\n\n**할 일**\n\n1. `git push origin main`를 실행하세요.\n2. `cd ../peer`를 실행하세요.\n3. `git fetch origin`를 실행하세요.\n4. `git merge origin/main`를 실행하세요.\n5. `cat guide.txt`를 실행하세요.\n6. `cd ../work`를 실행하세요.\n7. 파일과 상태를 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 이번에는 성공했어요. 동료 기록도 포함했거든요.\ngit push origin main\n# 지수의 폴더로 이동했어요.\ncd ../peer\n# 완성한 병합 기록을 받았어요.\ngit fetch origin\n# 지수의 main도 병합 기록까지 이어졌어요.\ngit merge origin/main\n# 안전하게 함께 남기라는 같은 안내가 보여요.\ncat guide.txt\n# 내 폴더로 돌아왔어요.\ncd ../work",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "merge_conflict",
+            "branch": "origin/main"
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내 병합"
+            ]
+          }
+        ],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 5,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          "remote_tracking_current": true
+        }
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "이제 내 push를 다시 시도해요.\n지수도 완성된 안내를 받아 같은 결과를 확인해요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "push",
+            "origin",
+            "main"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "이번에는 성공했어요. 동료 기록도 포함했거든요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cd ../peer",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "지수의 폴더로 이동했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "fetch",
+            "origin"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "완성한 병합 기록을 받았어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "merge",
+            "origin/main"
+          ],
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "지수의 main도 병합 기록까지 이어졌어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "안전하게 함께 남기라는 같은 안내가 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cd ../work",
+          "say": "명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 폴더로 돌아왔어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. 충돌 표시는 정답이 아니에요. 두 요청을 읽고 팀과 정한 안내를 남겨요.",
+          "target": "#git-demo-terminal"
+        }
+      ],
+      "git_checks": {
+        "minimum_commits": 5,
+        "head_message": "메모 안내 병합",
+        "tracked_files": {
+          "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+        },
+        "branch": "main",
+        "pushed": true
+      }
+    },
+    {
+      "id": "stp_1bf14bec-abb0-4656-b320-7fe6c7f96022",
+      "title": "직접 수정한 뒤 git diff를 읽으세요",
+      "goal": "충돌 해결을 마친 뒤 팀장이 문의 문구를 시험해 보래요. 임시 창구 한 줄만 더해요.\n아직 준비 영역에 담거나 커밋하지 마세요.\n\n**할 일**\n\n1. `cat guide.txt`를 실행하세요.\n2. `echo \"문의: 임시 창구\" >> guide.txt`를 실행하세요.\n3. `git diff`를 실행하세요.\n4. 확인한 내용에 맞는 보기를 고르고 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "working-index",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "merge_conflict",
+            "branch": "origin/main"
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내 병합"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "팀장이 문의 문구를 시험해 보래요. 임시 창구 한 줄만 더해요.\n아직 준비 영역에 담거나 커밋하지 마세요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "수정 전에는 안전하게 함께 남기는 안내와 상담 창구가 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"문의: 임시 창구\" >> guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "내 파일에 임시 창구 한 줄을 더했어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "diff"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "추가한 임시 창구 줄이 더하기 표시로 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. restore는 파일 수정을 취소해요. 커밋 취소는 revert로 기록해요.",
+          "target": "#git-demo-terminal"
+        }
+      ],
+      "interaction": {
+        "kind": "choice",
+        "options": [
+          {
+            "id": "remote",
+            "text": "내 파일과 원격 저장소의 최신 파일을 비교해요."
+          },
+          {
+            "id": "working-index",
+            "text": "내 작업 파일과 준비 영역의 내용을 비교해요."
+          }
+        ],
+        "answer": "working-index"
+      }
+    },
+    {
+      "id": "stp_a648f761-237e-49ab-9ac5-e62e280be396",
+      "title": "커밋 전 임시 안내를 취소하세요",
+      "goal": "팀장이 임시 창구 안내는 쓰지 않기로 했어요.\n방금 직접 더한 줄만 되돌려요.\n\n**할 일**\n\n1. `git diff`를 실행하세요.\n2. `git restore guide.txt`를 실행하세요.\n3. `cat guide.txt`를 실행하세요.\n4. `git status`를 실행하세요.\n5. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 아직 커밋하지 않은 임시 창구 줄이 보여요.\ngit diff\n# 작업 파일을 준비 영역의 안내로 되돌렸어요.\ngit restore guide.txt\n# 메모 안내와 상담 창구가 남았어요.\ncat guide.txt\n# 추가 수정이 없는 깨끗한 상태예요.\ngit status",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 5,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          }
+        },
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "merge_conflict",
+            "branch": "origin/main"
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내 병합"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n문의: 임시 창구\n"
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "팀장이 임시 창구 안내는 쓰지 않기로 했어요.\n방금 직접 더한 줄만 되돌려요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "diff"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "아직 커밋하지 않은 임시 창구 줄이 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "restore",
+            "guide.txt"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "작업 파일을 준비 영역의 안내로 되돌렸어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "안전하게 함께 남기는 안내와 상담 창구가 남았어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "status"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "추가 수정이 없는 깨끗한 상태예요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. restore는 파일 수정을 취소해요. 커밋 취소는 revert로 기록해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_2bcd5428-8523-49a8-93fb-41e51f518c8a",
+      "title": "잘못된 안내를 직접 만들어 확인하세요",
+      "goal": "이번에는 종료 안내를 잘못 쓴 상황을 경험해요.\n바로 다음 단계에서 이 내용을 기록해 볼게요.\n\n**할 일**\n\n1. `cat guide.txt`를 실행하세요.\n2. `echo \"안내: 서비스를 종료해요\" > guide.txt`를 실행하세요.\n3. `git diff`를 실행하세요.\n4. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 현재는 정상 안내예요.\ncat guide.txt\n# 작업 파일을 잘못된 종료 안내로 바꿨어요.\necho \"안내: 서비스를 종료해요\" > guide.txt\n# 정상 안내 두 줄이 종료 안내로 바뀐 차이가 보여요.\ngit diff",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 5,
+          "clean": false,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 서비스를 종료해요\n"
+          }
+        },
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "merge_conflict",
+            "branch": "origin/main"
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내 병합"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "이번에는 종료 안내를 잘못 쓴 상황을 경험해요.\n바로 다음 단계에서 이 내용을 기록해 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "현재는 정상 안내예요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "echo \"안내: 서비스를 종료해요\" > guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "작업 파일을 잘못된 종료 안내로 바꿨어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "diff"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "정상 안내 두 줄이 종료 안내로 바뀐 차이가 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. restore는 파일 수정을 취소해요. 커밋 취소는 revert로 기록해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_b9b46a26-0843-43e5-a5b1-e417e4b78ecd",
+      "title": "잘못된 종료 안내를 커밋하세요",
+      "goal": "잘못된 내용도 커밋하면 기록에 남아요.\n이번에는 커밋 후 복구가 왜 다른지 확인해요.\n\n**할 일**\n\n1. `git add guide.txt`를 실행하세요.\n2. `git commit -m \"잘못된 종료 안내\"`를 실행하세요.\n3. `git log --oneline`를 실행하세요.\n4. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 종료 안내를 준비 영역에 담았어요.\ngit add guide.txt\n# 잘못된 종료 안내가 새 커밋으로 남았어요.\ngit commit -m \"잘못된 종료 안내\"\n# 기존 두 기록 위에 잘못된 종료 안내가 있어요.\ngit log --oneline",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 6,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 서비스를 종료해요\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 서비스를 종료해요\n"
+          }
+        },
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "merge_conflict",
+            "branch": "origin/main"
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내 병합"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 서비스를 종료해요\n"
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "잘못된 내용도 커밋하면 기록에 남아요.\n이번에는 커밋 후 복구가 왜 다른지 확인해요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "add",
+            "guide.txt"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "종료 안내를 준비 영역에 담았어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "commit",
+            "-m",
+            "잘못된 종료 안내"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "잘못된 종료 안내가 새 커밋으로 남았어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "log",
+            "--oneline"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "앞선 협업 기록 위에 잘못된 종료 안내가 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. restore는 파일 수정을 취소해요. 커밋 취소는 revert로 기록해요.",
+          "target": "#git-demo-terminal"
+        }
+      ]
+    },
+    {
+      "id": "stp_cb42db3c-6669-4a1e-b201-c471091dabdc",
+      "title": "새 커밋을 남겨 잘못된 안내를 되돌리세요",
+      "goal": "팀장이 종료 안내를 발견했어요.\n기존 기록을 지우지 않고 취소한 이유도 남겨요.\n\n**할 일**\n\n1. `git revert --no-edit HEAD`를 실행하세요.\n2. `cat guide.txt`를 실행하세요.\n3. `git log --oneline`를 실행하세요.\n4. 파일 내용과 기록을 확인한 뒤 제출하세요.",
+      "language": "git",
+      "starter_code": "",
+      "solution": "# 잘못된 커밋을 취소하는 새 커밋이 생겼어요.\ngit revert --no-edit HEAD\n# 정상 메모 안내와 상담 창구가 다시 보여요.\ncat guide.txt\n# 잘못된 커밋도 남고 그 위에 취소 커밋이 있어요.\ngit log --oneline",
+      "tests": [],
+      "required": true,
+      "git_terminal": {
+        "initial_history": "uninitialized",
+        "workspace_group": "remote-guide-story",
+        "workspace_revision": "team-story-2",
+        "files": {},
+        "setup": [],
+        "state_goal": {
+          "current_branch": "main",
+          "commit_count": 7,
+          "clean": true,
+          "head_files": {
+            "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          "working_files": {
+            "guide.txt": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          "parent_files": {
+            "guide.txt": "안내: 서비스를 종료해요\n"
+          }
+        },
+        "demo_setup": [
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 남겨요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "문의 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "merge",
+              "origin/main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "안전한 메모 안내"
+            ]
+          },
+          {
+            "kind": "remote_commit",
+            "files": {
+              "guide.txt": "안내: 메모를 함께 남겨요\n문의: 상담 창구\n"
+            },
+            "message": "함께 쓰는 메모 안내"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "fetch",
+              "origin"
+            ]
+          },
+          {
+            "kind": "merge_conflict",
+            "branch": "origin/main"
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 메모를 안전하게 함께 남겨요\n문의: 상담 창구\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "메모 안내 병합"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "push",
+              "origin",
+              "main"
+            ]
+          },
+          {
+            "kind": "file",
+            "path": "guide.txt",
+            "content": "안내: 서비스를 종료해요\n"
+          },
+          {
+            "kind": "git",
+            "args": [
+              "add",
+              "guide.txt"
+            ]
+          },
+          {
+            "kind": "git",
+            "args": [
+              "commit",
+              "-m",
+              "잘못된 종료 안내"
+            ]
+          }
+        ]
+      },
+      "narration": [
+        {
+          "action": "say",
+          "text": "팀장이 종료 안내를 발견했어요.\n기존 기록을 지우지 않고 취소한 이유도 남겨요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "revert",
+            "--no-edit",
             "HEAD"
           ],
-          "say": "이전 기록도 남았는지 세어 봐요.",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "say",
-          "text": "처음 두 개에 새 기록까지 세 개예요.",
+          "text": "잘못된 커밋을 취소하는 새 커밋이 생겼어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "bash_command",
+          "command": "cat guide.txt",
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "say",
-          "text": "조심하세요. 과거 기록을 지우는 reset과 달라요.",
+          "text": "정상 안전하게 함께 남기는 안내와 상담 창구가 다시 보여요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "git_command",
+          "args": [
+            "log",
+            "--oneline"
+          ],
+          "say": "화면의 명령을 실행하고 결과를 볼게요.",
           "target": "#git-demo-terminal"
         },
         {
           "action": "say",
-          "text": "충돌이 생기는 다른 상황에는 별도 해결이 필요할 수 있어요.",
+          "text": "잘못된 커밋도 남고 그 위에 취소 커밋이 있어요.",
+          "target": "#git-demo-terminal"
+        },
+        {
+          "action": "say",
+          "text": "조심하세요. restore는 파일 수정을 취소해요. 커밋 취소는 revert로 기록해요.",
           "target": "#git-demo-terminal"
         }
       ]
     }
-  ]
+  ],
+  "learning_strategy": "연결·파일 작성·커밋·공유·동료 작업을 직접 하고 결과를 이어서 비교해요."
 }
